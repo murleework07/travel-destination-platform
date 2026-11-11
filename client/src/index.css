@@ -1,0 +1,24 @@
+@import "tailwindcss";
+
+/* Small reusable classes built from Tailwind utilities.
+   In Tailwind v4, @apply may only use built-in utilities, so the shared
+   button styles are written out in each button class. */
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center justify-center rounded-lg px-4 py-2 text-sm font-medium transition
+      disabled:cursor-not-allowed disabled:opacity-50
+      bg-teal-600 text-white hover:bg-teal-700;
+  }
+  .btn-outline {
+    @apply inline-flex items-center justify-center rounded-lg px-4 py-2 text-sm font-medium transition
+      disabled:cursor-not-allowed disabled:opacity-50
+      border border-slate-300 bg-white hover:bg-slate-100;
+  }
+  .input {
+    @apply w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm outline-none
+      focus:border-teal-500 focus:ring-2 focus:ring-teal-200;
+  }
+  .card {
+    @apply rounded-2xl border border-slate-200 bg-white shadow-sm;
+  }
+}

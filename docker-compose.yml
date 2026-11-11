@@ -1,0 +1,76 @@
+# Development:  docker compose up -d                       -> MySQL + Redis only
+# Full stack:   docker compose --profile full up -d --build -> + API + web on http://localhost:8080
+
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: travel_mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: "1234"
+      MYSQL_DATABASE: "travel_db"
+      MYSQL_USER: "travel_user"
+      MYSQL_PASSWORD: "1234"
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      # Runs ONLY when the volume is empty (first start on a new machine)
+      - ./server/database/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+      - ./server/database/seed.sql:/docker-entrypoint-initdb.d/02-seed.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7.4-alpine
+    container_name: travel_redis
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes"]
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  server:
+    build: ./server
+    container_name: travel_server
+    profiles: ["full"]
+    restart: unless-stopped
+    env_file: ./server/.env          # JWT secret etc.
+    environment:                     # container-specific overrides
+      NODE_ENV: "production"
+      DB_HOST: "mysql"
+      DB_PORT: "3306"
+      REDIS_URL: "redis://redis:6379"
+      CLIENT_URL: "http://localhost:8080"
+    volumes:
+      - uploads_data:/app/uploads
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  client:
+    build: ./client
+    container_name: travel_client
+    profiles: ["full"]
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    depends_on:
+      server:
+        condition: service_healthy
+
+volumes:
+  mysql_data:
+  redis_data:
+  uploads_data:

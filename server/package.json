@@ -1,0 +1,46 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "Backend API for Travel Destination Management Platform",
+  "main": "src/server.js",
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon src/server.js",
+    "start": "node src/server.js",
+    "db:schema": "docker exec -i travel_mysql mysql -u travel_user -p1234 travel_db < database/schema.sql",
+    "db:seed": "docker exec -i travel_mysql mysql -u travel_user -p1234 travel_db < database/seed.sql",
+    "db:seed-reviews": "docker exec -i travel_mysql mysql -u travel_user -p1234 travel_db < database/seed-reviews.sql",
+    "create-admin": "node src/scripts/createAdmin.js",
+    "loadtest:booking": "node src/scripts/loadTestBooking.js",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage"
+  },
+  "author": "Murlee Manoher Verma",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "compression": "^1.8.2",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.6",
+    "dotenv": "^18.0.10",
+    "express": "^5.3.0",
+    "helmet": "^8.3.0",
+    "ioredis": "^6.0.0",
+    "jsonwebtoken": "^9.0.3",
+    "morgan": "^1.12.1",
+    "multer": "^2.5.0",
+    "mysql2": "^3.24.6",
+    "pino": "^10.4.0",
+    "pino-http": "^11.0.0",
+    "swagger-ui-express": "^5.0.1",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@vitest/coverage-v8": "^5.1.0",
+    "nodemon": "^3.1.14",
+    "pino-pretty": "^13.2.0",
+    "supertest": "^7.3.2",
+    "vitest": "^5.1.0"
+  }
+}

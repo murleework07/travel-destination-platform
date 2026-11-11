@@ -1,0 +1,8 @@
+node_modules
+.env
+.env.local
+coverage
+uploads
+tests
+vitest.config.js
+*.log

@@ -1,0 +1,12 @@
+# Dependencies & build output
+node_modules/
+dist/
+coverage/
+
+# Secrets (never commit real .env files; .env.example and .env.test are safe)
+.env
+.env.local
+
+# User uploads & logs
+server/uploads/
+*.log
